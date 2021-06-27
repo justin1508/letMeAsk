@@ -9,9 +9,11 @@ import { Button } from '../components/Button';
 import { useAuth } from '../hooks/useAuth';
 import { FormEvent, useState } from 'react';
 import { database } from '../services/firebase';
+import { useTheme } from '../hooks/useTheme';
 
 export function Home() {
   const history = useHistory();
+  const { theme, toogleTheme } = useTheme();
   const { user, signInWithGoogle } = useAuth();
   const [roomCode, setRoomCode] = useState('');
 
@@ -37,17 +39,23 @@ export function Home() {
       return;
     }
 
+    if (roomRef.val().endedAt) {
+      alert('Room already closed');
+      return;
+    }
+
     history.push(`/rooms/${roomCode}`);
   }
 
   return (
-    <div id="page-auth">
+    <div id="page-auth" className={theme}>
       <aside>
         <img src={illustrationImg} alt="Ilustracao de perguntas e respostas" />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
         <p>Tire as dúvidas da sua audiência em tempo-real</p>
       </aside>
       <main>
+        <button onClick={toogleTheme}>{theme}</button>
         <div className="main-content">
           <img src={logoImg} alt="letmeask" />
           <button onClick={handleCreateRoom} className="create-room">
